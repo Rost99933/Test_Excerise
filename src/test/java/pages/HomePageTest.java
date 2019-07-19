@@ -1,18 +1,23 @@
 package pages;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import utilities.Browser;
+import org.junit.Test;
 
-public class HomePageTest extends TestBase{
+public class HomePageTest extends TestBase {
 
-    @Test
-    public void testH1Existing() throws InterruptedException {
-        Assert.assertTrue(Browser.getTitle() != null);
+    public HomePageTest(String browser) {
+
+        super(browser);
     }
 
+//    @Test
+//    public void testH1Existing() throws InterruptedException {
+//
+//        Assert.assertTrue(Browser.getTitle() != null);
+
+
     @Test
-    public void test2() throws InterruptedException {
-        Assert.assertTrue(true);
+    public void hoverSmartphoneElement() {
+
+        homePage.hoverSmartphoneElement();
     }
 }

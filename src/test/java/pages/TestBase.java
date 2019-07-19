@@ -1,35 +1,75 @@
 package pages;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.ScreenshotException;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterTest;
 import utilities.Browser;
+import pages.HomePage;
+import webdriver.WebDriverFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
-public abstract class TestBase {
+@RunWith(Parameterized.class)
+
+
+public class TestBase {
+
+    public WebDriver driver;
+    public static HomePage homePage;
+    private static Object HomePage;
+    private String browser;
 
     private static final String SCREENSHOT_FOLDER = "target/screenshots/";
     private static final String SCREENSHOT_FORMAT = ".png";
 
-    @BeforeClass
-    public void init() {
-        Browser.Initialize();
+    @Rule
+    public TestName testName = new TestName();
+
+
+    public TestBase(String browser) {
+
+        this.browser = browser;
     }
 
-    @AfterSuite(alwaysRun = true)
+
+    @Parameterized.Parameters
+    public static Collection testData() {
+
+        return Arrays.asList(new Object[][]{
+                {"chrome"}
+        });
+    }
+
+    @Before
+    public void init () {
+
+        Browser.Initialize();
+        driver = Browser.Driver();
+        homePage = new HomePage(driver);
+    }
+
+    @After
     public void tearDown() {
-        if (Browser.Driver() != null) {
-            Browser.Driver().quit();
-        }
+
+        Browser.close();
     }
 
     @AfterMethod
@@ -46,8 +86,7 @@ public abstract class TestBase {
                         e.printStackTrace();
                     }
                 }
-            }
-            catch (ScreenshotException se) {
+            } catch (ScreenshotException se) {
                 se.printStackTrace();
             }
         }
